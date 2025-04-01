@@ -1,0 +1,2 @@
+/Users/kripashree/Documents/GitHub/Frontend/capstone_app/android/app/.cxx/Debug/4w676n2c/x86/CMakeFiles/edit_cache.dir
+/Users/kripashree/Documents/GitHub/Frontend/capstone_app/android/app/.cxx/Debug/4w676n2c/x86/CMakeFiles/rebuild_cache.dir

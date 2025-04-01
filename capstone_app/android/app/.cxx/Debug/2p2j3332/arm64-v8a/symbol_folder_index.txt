@@ -1,0 +1,1 @@
+/Users/kripashree/Documents/GitHub/Frontend/capstone_app/build/app/intermediates/cxx/Debug/2p2j3332/obj/arm64-v8a

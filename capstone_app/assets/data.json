@@ -1,0 +1,200 @@
+[
+    {
+        "client":"ABC Company",
+        "projectId": "0001",
+        "projectname": "Project 1",
+        "projecttype": "Normal",
+        "startdestination": "Qingdao",
+        "enddestination": "Singapore",
+        "currenttask": "Offsite",
+        "projectstatus": "In Progress",
+        "startdate": "15/08/2024",
+        "cargo": [ 
+            { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+            { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+            { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+            { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+        ]
+      },
+
+      {
+        "client":"ABC Company",
+        "projectId": "0002",
+        "projectname": "Project 2",
+        "projecttype": "OOG",
+        "startdestination": "Jakarta",
+        "enddestination": "Singapore",
+        "currenttask": "Onsite",
+        "projectstatus": "In Progress",
+        "startdate": "22/09/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      },
+
+      {
+        "client":"ABC Company",
+        "projectId": "0003",
+        "projectname": "Project 3",
+        "projecttype": "Normal",
+        "startdestination": "Hong Kong",
+        "enddestination": "Singapore",
+        "currenttask": "Onsite",
+        "projectstatus": "In Progress",
+        "startdate": "03/10/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      },
+
+      {
+        "client":"ABC Company",
+        "projectId": "0004",
+        "projectname": "Project 4",
+        "projecttype": "Normal",
+        "startdestination": "Tokyo",
+        "enddestination": "Singapore",
+        "currenttask": "Offsite",
+        "projectstatus": "On Hold",
+        "startdate": "21/07/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      },
+
+      {
+        "client":"ABC Company",
+        "projectId": "0005",
+        "projectname": "Project 5",
+        "projecttype": "Normal",
+        "startdestination": "Hong Kong",
+        "enddestination": "Singapore",
+        "currenttask": "Onsite",
+        "projectstatus": "On Hold",
+        "startdate": "01/09/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5","quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      },
+
+      {
+        "client":"ABC Company",
+        "projectId": "0006",
+        "projectname": "Project 6",
+        "projecttype": "Normal",
+        "startdestination": "Shang Hai",
+        "enddestination": "Singapore",
+        "currenttask": "Onsite",
+        "projectstatus": "Unstarted",
+        "startdate": "08/10/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      },
+
+      {
+        "client":"ABC Company",
+        "projectId": "0007",
+        "projectname": "Project 7",
+        "projecttype": "Normal",
+        "startdestination": "Bankok",
+        "enddestination": "Singapore",
+        "currenttask": "Onsite",
+        "projectstatus": "Unstarted",
+        "startdate": "01/11/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      },
+
+      {
+        "client":"ABC Company",
+        "projectId": "0008",
+        "projectname": "Project 8",
+        "projecttype": "OOG",
+        "startdestination": "Taiwan",
+        "enddestination": "Singapore",
+        "currenttask": "Onsite",
+        "projectstatus": "Completed",
+        "startdate": "06/07/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      },
+
+      {
+        "client":"ABC Company",
+        "projectId": "0009",
+        "projectname": "Project 9",
+        "projecttype": "Normal",
+        "startdestination": "Seoul",
+        "enddestination": "Singapore",
+        "currenttask": "Onsite",
+        "projectstatus": "Completed",
+        "startdate": "19/05/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      },
+      {
+        "client":"ABC Company",
+        "projectId": "0010",
+        "projectname": "Project 10",
+        "projecttype": "Normal",
+        "startdestination": "Osaka",
+        "enddestination": "Singapore",
+        "currenttask": "Onsite",
+        "projectstatus": "Completed",
+        "startdate": "15/03/2024",
+        "cargo": [ 
+          { "name": "XXX", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }, 
+          { "name": "YYY", "length": "10", "width": "10", "height": "10", "weight": "5", "quantity": "3" }
+        ],
+        "scope": [
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" },
+          { "start": "XXX", "description": "abcdefghijkl", "equipment": "YYY" }
+      ]
+      }  
+]
