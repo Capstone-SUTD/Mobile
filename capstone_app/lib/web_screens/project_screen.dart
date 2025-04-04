@@ -79,8 +79,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
           _project = foundProject;
           if (_project!.stage != null && _project!.stage!.isNotEmpty) {
             final stageLabel = _project!.stage!.toLowerCase();
-            final index = kStepLabels.indexWhere((label) => label.toLowerCase() == stageLabel);
-            currentStep = index >= 0 ? index : 0;
+            //final index = kStepLabels.indexWhere((label) => label.toLowerCase() == stageLabel);
+            //currentStep = index >= 0 ? index : 0;
           }
           isNewProject = false;
           isOOG = true;
@@ -317,6 +317,18 @@ class _ProjectScreenState extends State<ProjectScreen> {
             builder: (context) => OnsiteChecklistScreen(project: _project),
           ),
         );
+        break;
+      case 3: // NEW: Navigate to Offsite Checklist
+      if (_project?.projectId != null && _project!.projectId!.isNotEmpty) {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OffsiteChecklistWidget(
+              projectId: int.tryParse(_project!.projectId!) ?? 0,
+            ),
+          ),
+        );
+      }
         break;
     }
   }

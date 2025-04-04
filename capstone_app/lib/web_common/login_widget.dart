@@ -1,4 +1,4 @@
-import 'package:capstone_app/web_screens/dashboard_screen.dart';
+import 'package:capstone_app/web_screens/all_project_screen.dart';
 import 'package:flutter/material.dart';
 
 class LoginSignupWidget extends StatefulWidget {
@@ -45,7 +45,7 @@ class _LoginSignupWidgetState extends State<LoginSignupWidget> {
               ElevatedButton(
                 onPressed: () {
                   // Handle login/signup action
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => DashboardScreen()));
+                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => AllProjectsScreen()));
                 },
                 child: Text('Log In'),
               ),

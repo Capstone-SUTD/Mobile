@@ -342,11 +342,11 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
                     },
                   ),
                   const SizedBox(height: 20),
-                  ProjectStepperWidget(
-                    currentStage: _project.stage,
-                    projectId: _project.projectId,
-                    onStepTapped: (_) {},
-                  ),
+                  // ProjectStepperWidget(
+                  //   currentStage: _project.stage,
+                  //   projectId: _project.projectId,
+                  //   onStepTapped: (_) {},
+                  // ),
                   const SizedBox(height: 20),
                   ..._checklistData.entries.map((entry) {
                     final section = entry.key;
@@ -435,7 +435,7 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
       final token = prefs.getString('auth_token');
 
       final response = await http.post(
-        Uri.parse("http://localhost:3000/project/add-task-comments"),
+        Uri.parse("http://10.0.2.2:3000/project/add-task-comments"),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',

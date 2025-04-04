@@ -201,13 +201,13 @@ Future<List<Stakeholder>> _fetchUpdatedStakeholders() async {
             const SizedBox(height: 20),
 
             // **Stepper Widget**
-            ProjectStepperWidget(
-              currentStage: _project.stage,
-              projectId: _project.projectId,
-              onStepTapped: (newIndex) {
-                // Optional logic when a step is tappedr
-              },
-            ),
+            // ProjectStepperWidget(
+            //   currentStage: _project.stage,
+            //   projectId: _project.projectId,
+            //   onStepTapped: (newIndex) {
+            //     // Optional logic when a step is tappedr
+            //   },
+            // ),
             const SizedBox(height: 20),
             const Divider(),
             if (_msVersions > 0 || _raVersions > 0) ...[

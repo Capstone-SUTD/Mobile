@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
-import '../web_common/sidebar_widget.dart';
+//import '../web_common/sidebar_widget.dart';
 import '../web_common/project_table_widget.dart';
 import '../web_common/equipment_recommendation_widget.dart';
 import '../models/project_model.dart';
@@ -110,7 +110,7 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
       appBar: _buildAppBar(),
       body: Row(
         children: [
-          Sidebar(selectedPage: '/projects'),
+          //Sidebar(selectedPage: '/projects'),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -124,21 +124,21 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
                             : ProjectTableWidget(projects: projectsList),
                   ),
                   const SizedBox(height: 16),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () => _openEquipmentRecommendation(context),
-                        child: const Text("Equipment Recommendation"),
-                      ),
-                      const SizedBox(width: 16),
-                      ElevatedButton.icon(
-                        onPressed: () => _createNewProject(context),
-                        icon: const Icon(Icons.add),
-                        label: const Text("New Project"),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     ElevatedButton(
+                  //       onPressed: () => _openEquipmentRecommendation(context),
+                  //       child: const Text("Equipment Recommendation"),
+                  //     ),
+                  //     const SizedBox(width: 16),
+                  //     ElevatedButton.icon(
+                  //       onPressed: () => _createNewProject(context),
+                  //       icon: const Icon(Icons.add),
+                  //       label: const Text("New Project"),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
@@ -146,8 +146,39 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
         ],
       ),
       drawer: Drawer(
-        child: Sidebar(selectedPage: '/projects'),
+  child: ListView(
+    padding: EdgeInsets.zero,
+    children: [
+      ListTile(
+        leading: const Icon(Icons.build),
+        title: const Text("Equipment Recommendation"),
+        onTap: () {
+          Navigator.pop(context); // Close drawer
+          _openEquipmentRecommendation(context);
+        },
       ),
+      ListTile(
+        leading: const Icon(Icons.add),
+        title: const Text("New Project"),
+        onTap: () {
+          Navigator.pop(context); // Close drawer
+          _createNewProject(context);
+        },
+      ),
+      ListTile(
+        leading: const Icon(Icons.logout),
+        title: const Text("Logout"),
+        onTap: () async {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.remove('auth_token'); // Remove token
+          
+          Navigator.pushReplacementNamed(context, '/login'); // Navigate to login
+        },
+      ),
+    ],
+  ),
+),
+
     );
   }
 

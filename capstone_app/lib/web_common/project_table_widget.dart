@@ -1,7 +1,4 @@
-// ignore_for_file: deprecated_member_use
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import '../models/project_model.dart';
 import '../web_screens/project_screen.dart';
 
@@ -17,12 +14,22 @@ class ProjectTableWidget extends StatefulWidget {
 class _ProjectTableWidgetState extends State<ProjectTableWidget> {
   int _currentPage = 0;
   final int _rowsPerPage = 10;
-  String _searchQuery = '';
-  String? _sortColumn;
-  bool _sortAscending = true;
+  bool _isDateAscending = true;
+  late List<Project> _sortedProjects;
 
-  void _refreshProjects() {
-    setState(() {});
+  @override
+  void initState() {
+    super.initState();
+    _sortedProjects = List.from(widget.projects);
+  }
+
+  void _sortByDate() {
+    setState(() {
+      _isDateAscending = !_isDateAscending;
+      _sortedProjects.sort((a, b) => _isDateAscending
+          ? a.startDate.compareTo(b.startDate)
+          : b.startDate.compareTo(a.startDate));
+    });
   }
 
   void _navigateToProject(BuildContext context, String projectId) {
@@ -30,53 +37,15 @@ class _ProjectTableWidgetState extends State<ProjectTableWidget> {
       context,
       MaterialPageRoute(
         builder: (context) => ProjectScreen(projectId: projectId),
-        fullscreenDialog: true,
       ),
-    ).then((_) => _refreshProjects());
-  }
-
-  List<Project> _filterAndSortProjects(List<Project> projects) {
-    // Filter projects based on search query
-    var filtered = projects.where((project) {
-      return project.projectName.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          project.startDestination.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          project.endDestination.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-          project.projectStatus.toLowerCase().contains(_searchQuery.toLowerCase());
-    }).toList();
-
-    // Sort projects if sort column is selected
-    if (_sortColumn != null) {
-      filtered.sort((a, b) {
-        int compareResult;
-        switch (_sortColumn) {
-          case 'Project Name':
-            compareResult = a.projectName.compareTo(b.projectName);
-            break;
-          case 'Start Destination':
-            compareResult = a.startDestination.compareTo(b.startDestination);
-            break;
-          case 'End Destination':
-            compareResult = a.endDestination.compareTo(b.endDestination);
-            break;
-          case 'Status':
-            compareResult = a.projectStatus.compareTo(b.projectStatus);
-            break;
-          case 'Date':
-            compareResult = a.startDate.compareTo(b.startDate);
-            break;
-          default:
-            compareResult = 0;
-        }
-        return _sortAscending ? compareResult : -compareResult;
-      });
-    }
-
-    return filtered;
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    int totalPages = (widget.projects.length / _rowsPerPage).ceil();
+    int totalPages = _sortedProjects.isEmpty
+        ? 1
+        : (_sortedProjects.length / _rowsPerPage).ceil();
 
     return Column(
       children: [
@@ -86,24 +55,39 @@ class _ProjectTableWidgetState extends State<ProjectTableWidget> {
             child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.95,
               child: DataTable(
-                columnSpacing: 20,
+                columnSpacing: 15,
                 headingRowHeight: 40,
                 dataRowHeight: 50,
-                columns: const [
-                  DataColumn(label: Text("Project Name")),
-                  DataColumn(label: Text("Start Destination")),
-                  DataColumn(label: Text("End Destination")),
-                  DataColumn(label: Text("Status")),
-                  DataColumn(label: Text("Date")),
+                columns: [
+                  const DataColumn(label: Text("Name")),
+                  const DataColumn(label: Text("Start")),
+                  const DataColumn(label: Text("End")),
+                  const DataColumn(label: Text("Status")),
+                  DataColumn(
+                    label: InkWell(
+                      onTap: _sortByDate,
+                      child: Row(
+                        children: [
+                          const Text("Date"),
+                          Icon(
+                            _isDateAscending
+                                ? Icons.arrow_drop_up
+                                : Icons.arrow_drop_down,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
-                rows: widget.projects
+                rows: _sortedProjects
                     .skip(_currentPage * _rowsPerPage)
                     .take(_rowsPerPage)
                     .map((project) => DataRow(
                           cells: [
                             DataCell(
                               Text(project.projectName),
-                              onTap: () => _navigateToProject(context, project.projectId),
+                              onTap: () =>
+                                  _navigateToProject(context, project.projectId),
                             ),
                             DataCell(Text(project.startDestination)),
                             DataCell(Text(project.endDestination)),
@@ -116,7 +100,6 @@ class _ProjectTableWidgetState extends State<ProjectTableWidget> {
             ),
           ),
         ),
-
         const SizedBox(height: 8),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -125,12 +108,17 @@ class _ProjectTableWidgetState extends State<ProjectTableWidget> {
             Row(
               children: [
                 ElevatedButton(
-                  onPressed: _currentPage > 0 ? () => setState(() => _currentPage--) : null,
+                  onPressed: _currentPage > 0 && _sortedProjects.isNotEmpty
+                      ? () => setState(() => _currentPage--)
+                      : null,
                   child: const Text("Previous"),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
-                  onPressed: _currentPage < totalPages - 1 ? () => setState(() => _currentPage++) : null,
+                  onPressed: _currentPage < totalPages - 1 &&
+                          _sortedProjects.isNotEmpty
+                      ? () => setState(() => _currentPage++)
+                      : null,
                   child: const Text("Next"),
                 ),
               ],
@@ -142,31 +130,39 @@ class _ProjectTableWidgetState extends State<ProjectTableWidget> {
   }
 
   Widget _buildStatusBadge(String status) {
-    final Map<String, Color> statusColors = {
-      'In Progress': Colors.blue,
-      'Completed': Colors.green,
-      'On Hold': Colors.orange,
-      'Unstarted': Colors.grey,
-    };
+    Color badgeColor;
+    switch (status) {
+      case "In Progress":
+        badgeColor = Colors.blue;
+        break;
+      case "Completed":
+        badgeColor = Colors.green;
+        break;
+      case "On Hold":
+        badgeColor = Colors.orange;
+        break;
+      case "Unstarted":
+        badgeColor = Colors.grey;
+        break;
+      default:
+        badgeColor = Colors.black;
+    }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: statusColors[status] ?? Colors.grey[300],
-        borderRadius: BorderRadius.circular(12),
+        color: badgeColor,
+        borderRadius: BorderRadius.circular(8),
       ),
       child: Text(
         status,
-        style: const TextStyle(
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-          fontSize: 12,
-        ),
+        style:
+            const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 8),
       ),
     );
   }
 
   String _formatDate(DateTime date) {
-    return DateFormat('dd/MM/yyyy').format(date);
+    return "${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}/${date.year}";
   }
 }

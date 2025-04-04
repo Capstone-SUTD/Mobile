@@ -9,7 +9,7 @@ class ProjectTabWidget extends StatelessWidget {
     super.key,
     required this.selectedTabIndex,
     required this.onTabSelected,
-    this.tabTitles = const ["Offsite Checklist", "MS/RA Generation", "Onsite Checklist"],
+    this.tabTitles = const ["Project Details","Offsite Checklist", "MS/RA Generation", "Onsite Checklist"],
   });
 
   @override
