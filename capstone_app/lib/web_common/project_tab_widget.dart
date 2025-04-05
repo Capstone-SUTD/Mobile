@@ -4,39 +4,51 @@ class ProjectTabWidget extends StatelessWidget {
   final int selectedTabIndex;
   final Function(int) onTabSelected;
   final List<String> tabTitles;
-
+  
   const ProjectTabWidget({
     super.key,
     required this.selectedTabIndex,
     required this.onTabSelected,
-    this.tabTitles = const ["Project Details","Offsite Checklist", "MS/RA Generation", "Onsite Checklist"],
+    this.tabTitles = const ["Project Details", "Offsite Checklist", "MS/RA Generation", "Onsite Checklist"],
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
-
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceContainerHighest,
-        borderRadius: BorderRadius.circular(12),
-      ),
-      padding: const EdgeInsets.all(4),
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
-        children: List.generate(tabTitles.length, (index) {
-          return _buildTab(
-            context: context,
-            title: tabTitles[index],
-            index: index,
-            isSmallScreen: isSmallScreen,
-          );
-        }),
+    
+    return GestureDetector(
+      // Enable swipe navigation between tabs
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity! > 0 && selectedTabIndex > 0) {
+          // Swiping right, go to previous tab
+          onTabSelected(selectedTabIndex - 1);
+        } else if (details.primaryVelocity! < 0 && selectedTabIndex < tabTitles.length - 1) {
+          // Swiping left, go to next tab
+          onTabSelected(selectedTabIndex + 1);
+        }
+      },
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.colorScheme.surfaceContainerHighest,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.all(4),
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: Row(
+          children: List.generate(tabTitles.length, (index) {
+            return _buildTab(
+              context: context,
+              title: tabTitles[index],
+              index: index,
+              isSmallScreen: isSmallScreen,
+            );
+          }),
+        ),
       ),
     );
   }
-
+  
   Widget _buildTab({
     required BuildContext context,
     required String title,
@@ -45,7 +57,7 @@ class ProjectTabWidget extends StatelessWidget {
   }) {
     final theme = Theme.of(context);
     final isSelected = index == selectedTabIndex;
-
+    
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),

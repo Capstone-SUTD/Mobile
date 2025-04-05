@@ -319,28 +319,28 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Onsite Checklist"),
-      ),
+      // appBar: AppBar(
+      //   title: const Text("Onsite Checklist"),
+      // ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  ProjectTabWidget(
-                    selectedTabIndex: 2,
-                    onTabSelected: (index) {
-                      if (index == 1) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MSRAGenerationScreen(project: _project),
-                          ),
-                        );
-                      }
-                    },
-                  ),
+                  // ProjectTabWidget(
+                  //   selectedTabIndex: 2,
+                  //   onTabSelected: (index) {
+                  //     if (index == 1) {
+                  //       Navigator.pushReplacement(
+                  //         context,
+                  //         MaterialPageRoute(
+                  //           builder: (context) => MSRAGenerationScreen(project: _project),
+                  //         ),
+                  //       );
+                  //     }
+                  //   },
+                  // ),
                   const SizedBox(height: 20),
                   // ProjectStepperWidget(
                   //   currentStage: _project.stage,

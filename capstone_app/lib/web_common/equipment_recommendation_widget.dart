@@ -90,91 +90,92 @@ class _EquipmentRecommendationDialogState
     }
   }
 
-  void _showResultsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: SizedBox(
-            width: 400,
-            height: 480,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    "Recommended Equipment",
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "By Threshold Rule",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: TextEditingController(text: crane_rule),
-                    decoration: const InputDecoration(labelText: "Crane"),
-                    readOnly: true,
-                  ),
-                  TextField(
-                    controller: TextEditingController(text: threshold_rule),
-                    decoration: const InputDecoration(labelText: "Threshold (kg)"),
-                    readOnly: true,
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "By ML Model",
-                    style: TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: TextEditingController(text: crane),
-                    decoration: const InputDecoration(labelText: "Crane"),
-                    readOnly: true,
-                  ),
-                  TextField(
-                    controller: TextEditingController(text: threshold),
-                    decoration: const InputDecoration(labelText: "Threshold (kg)"),
-                    readOnly: true,
-                  ),
-                  TextField(
-                    controller: TextEditingController(text: trailer),
-                    decoration: const InputDecoration(labelText: "Trailer"),
-                    readOnly: true,
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          String copyText =
-                              "By Rule\nCrane: $crane_rule\nThreshold (kg): $threshold_rule\nBy ML Model\nCrane: $crane\nThreshold (kg): $threshold\nTrailer: $trailer";
-                          Clipboard.setData(ClipboardData(text: copyText));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("Copied to clipboard")),
-                          );
-                        },
-                        child: const Text("Copy"),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text("Close"),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+ void _showResultsDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: MediaQuery.of(context).size.width * 0.9,
+            maxHeight: MediaQuery.of(context).size.height * 0.8,
+          ),
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  "Recommended Equipment",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "By Threshold Rule",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: TextEditingController(text: crane_rule),
+                  decoration: const InputDecoration(labelText: "Crane"),
+                  readOnly: true,
+                ),
+                TextField(
+                  controller: TextEditingController(text: threshold_rule),
+                  decoration: const InputDecoration(labelText: "Threshold (kg)"),
+                  readOnly: true,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  "By ML Model",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+                TextField(
+                  controller: TextEditingController(text: crane),
+                  decoration: const InputDecoration(labelText: "Crane"),
+                  readOnly: true,
+                ),
+                TextField(
+                  controller: TextEditingController(text: threshold),
+                  decoration: const InputDecoration(labelText: "Threshold (kg)"),
+                  readOnly: true,
+                ),
+                TextField(
+                  controller: TextEditingController(text: trailer),
+                  decoration: const InputDecoration(labelText: "Trailer"),
+                  readOnly: true,
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        String copyText =
+                            "By Rule\nCrane: $crane_rule\nThreshold (kg): $threshold_rule\nBy ML Model\nCrane: $crane\nThreshold (kg): $threshold\nTrailer: $trailer";
+                        Clipboard.setData(ClipboardData(text: copyText));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Copied to clipboard")),
+                        );
+                      },
+                      child: const Text("Copy"),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Close"),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   String? _validateNumberInput(String? value) {
     if (value == null || value.isEmpty) return "Required field";

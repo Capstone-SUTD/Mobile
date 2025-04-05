@@ -126,7 +126,7 @@ class _MSRAGenerationScreenState extends State<MSRAGenerationScreen> {
 
 
   void _onTabSelected(int index) {
-    if (index == 2) {
+    if (index == 4) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => OnsiteChecklistScreen(project: _project)),
@@ -187,20 +187,20 @@ Future<List<Stakeholder>> _fetchUpdatedStakeholders() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("MS/RA Generation")),
+      // appBar: AppBar(title: const Text("MS/RA Generation")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // **Project Tab Widget (Switch Between Tabs)**
-            ProjectTabWidget(
-              selectedTabIndex: 1,
-              onTabSelected: _onTabSelected,
-            ),
+            // ProjectTabWidget(
+            //   selectedTabIndex: 3,
+            //   onTabSelected: _onTabSelected,
+            // ),
             const SizedBox(height: 20),
 
-            // **Stepper Widget**
+            // **Stepper Widget**q
             // ProjectStepperWidget(
             //   currentStage: _project.stage,
             //   projectId: _project.projectId,
@@ -208,8 +208,7 @@ Future<List<Stakeholder>> _fetchUpdatedStakeholders() async {
             //     // Optional logic when a step is tappedr
             //   },
             // ),
-            const SizedBox(height: 20),
-            const Divider(),
+            
             if (_msVersions > 0 || _raVersions > 0) ...[
               DownloadMSRAWidget(
                 projectId: _project?.projectId ?? "",

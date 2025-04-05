@@ -13,7 +13,7 @@ class WorkScopeWidget extends StatefulWidget {
 
 class WorkScopeWidgetState extends State<WorkScopeWidget> {
   List<Map<String, String>> _workScopeList = [];
-  final List<String> _scopeOptions = ["Lifting", "Transportation"];
+  final List<String> _scopeOptions = ["Lifting", "Vehicle"];
   bool get isReadOnly => widget.workScopeList != null && widget.workScopeList!.isNotEmpty;
 
   List<Map<String, String>> getWorkScopeData() => _workScopeList;
@@ -191,7 +191,7 @@ class WorkScopeWidgetState extends State<WorkScopeWidget> {
                       border: InputBorder.none,
                     ),
                   )
-                : _workScopeList[index]["scope"] == "Transportation"
+                : _workScopeList[index]["scope"] == "Vehicle"
                     ? TextFormField(
                         textAlign: TextAlign.center,
                         onChanged: (value) {

@@ -89,7 +89,7 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
       }
 
       final response = await http.get(
-        Uri.parse('http://localhost:5000/project/stakeholders'),
+        Uri.parse('http://10.0.2.2:3000/project/stakeholders'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json', // optional but recommended
@@ -105,11 +105,6 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
                     "name": s["username"].toString(),
                   })
               .toList();
-
-          // Ensure the list isn't empty before trying to populate it
-          // if (selectedStakeholders.isEmpty) {
-          //  selectedStakeholders.add({"userId": "", "role": "", "name": ""});
-          // }
         });
       } else {
         throw Exception("Failed to load stakeholders");
@@ -151,7 +146,7 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -170,113 +165,112 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
               children: List.generate(selectedStakeholders.length, (index) {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 10),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      double totalWidth = constraints.maxWidth;
-                      double fieldWidth = (totalWidth - 60) / 2; // account for padding + icon
-
-                      return Row(
-                        children: [
-                          SizedBox(
-                            width: fieldWidth,
-                            child: DropdownButtonFormField<String>(
-                              isDense: true,
-                              decoration: const InputDecoration(
-                                labelText: "Select Stakeholder",
-                                border: OutlineInputBorder(),
-                              ),
-                              items: stakeholdersList.map((s) {
-                                final isDisabled = _isUserSelectedElsewhere(s["userId"]!, index);
-                                return DropdownMenuItem(
-                                  value: s["userId"],
-                                  enabled: !isDisabled,
-                                  child: Text(
-                                    s["name"]!,
-                                    style: TextStyle(
-                                      color: isDisabled ? Colors.grey : Colors.black,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              value: selectedStakeholders[index]["userId"]!.isNotEmpty
-                                  ? selectedStakeholders[index]["userId"]
-                                  : null,
-                              onChanged: (value) {
-                                if (_isUserSelectedElsewhere(value!, index)) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('User already assigned to another role.'),
-                                      duration: Duration(seconds: 2),
-                                    ),
-                                  );
-                                  return;
-                                }
-                                setState(() {
-                                  selectedStakeholders[index]["userId"] = value;
-                                  final selectedStakeholder =
-                                      stakeholdersList.firstWhere((s) => s["userId"] == value);
-                                  selectedStakeholders[index]["name"] = selectedStakeholder["name"]!;
-                                });
-                                widget.onChanged?.call();
-                              },
-                            ),
+                  child: Row(
+                    children: [
+                      // First dropdown - takes 45% of available width
+                      Expanded(
+                        flex: 18,
+                        child: DropdownButtonFormField<String>(
+                          //isDense: true,
+                          decoration: const InputDecoration(
+                            labelText: "Stakeholder",
+                            border: OutlineInputBorder(),
                           ),
-                          const SizedBox(width: 10),
-                          SizedBox(
-                            width: fieldWidth,
-                            child: DropdownButtonFormField<String>(
-                              isDense: true,
-                              decoration: const InputDecoration(
-                                labelText: "Role",
-                                border: OutlineInputBorder(),
+                          items: stakeholdersList.map((s) {
+                            final isDisabled = _isUserSelectedElsewhere(s["userId"]!, index);
+                            return DropdownMenuItem(
+                              value: s["userId"],
+                              enabled: !isDisabled,
+                              child: Text(
+                                s["name"]!,
+                                style: TextStyle(
+                                  color: isDisabled ? Colors.grey : Colors.black,
+                                ),
                               ),
-                              items: _roleOptions.map((role) {
-                                bool isDisabled = _isRoleSelectedElsewhere(role, index);
-                                return DropdownMenuItem(
-                                  value: role,
-                                  child: Text(
-                                    role,
-                                    style: TextStyle(
-                                      color: isDisabled ? Colors.grey : Colors.black,
-                                    ),
-                                  ),
-                                  enabled: !isDisabled || role == "Additional",
-                                );
-                              }).toList(),
-                              value: selectedStakeholders[index]["role"]!.isNotEmpty
-                                  ? selectedStakeholders[index]["role"]
-                                  : null,
-                              onChanged: (value) {
-                                if (!_isRoleSelectedElsewhere(value!, index) ||
-                                    value == "Additional") {
-                                  setState(() {
-                                    selectedStakeholders[index]["role"] = value;
-                                  });
-                                  widget.onChanged?.call();
-                                }
-                              },
-                            ),
+                            );
+                          }).toList(),
+                          value: selectedStakeholders[index]["userId"]!.isNotEmpty
+                              ? selectedStakeholders[index]["userId"]
+                              : null,
+                          onChanged: (value) {
+                            if (value != null && _isUserSelectedElsewhere(value, index)) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('User already assigned to another role.'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                              return;
+                            }
+                            setState(() {
+                              selectedStakeholders[index]["userId"] = value ?? "";
+                              final selectedStakeholder =
+                                  stakeholdersList.firstWhere((s) => s["userId"] == value,
+                                      orElse: () => {"userId": "", "name": ""});
+                              selectedStakeholders[index]["name"] = selectedStakeholder["name"]!;
+                            });
+                            widget.onChanged?.call();
+                          },
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      // Second dropdown - takes 45% of available width
+                      Expanded(
+                        flex: 16,
+                        child: DropdownButtonFormField<String>(
+                          //isDense: true,
+                          decoration: const InputDecoration(
+                            labelText: "Role",
+                            border: OutlineInputBorder(),
                           ),
-                          const SizedBox(width: 10),
-                          SizedBox(
-                            width: 40,
-                            child: index == 0
-                                ? IconButton(
-                                    icon: const Icon(Icons.add_circle,
-                                        color: Colors.blue),
-                                    onPressed: _addStakeholder,
-                                  )
-                                : index > 2
-                                    ? IconButton(
-                                        icon: const Icon(Icons.remove_circle,
-                                            color: Colors.red),
-                                        onPressed: () => _removeStakeholder(index),
-                                      )
-                                    : const SizedBox.shrink(),
-                          )
-                        ],
-                      );
-                    },
+                          items: _roleOptions.map((role) {
+                            bool isDisabled = _isRoleSelectedElsewhere(role, index);
+                            return DropdownMenuItem(
+                              value: role,
+                              child: Text(
+                                role,
+                                style: TextStyle(
+                                  color: isDisabled ? Colors.grey : Colors.black,
+                                ),
+                              ),
+                              enabled: !isDisabled || role == "Additional",
+                            );
+                          }).toList(),
+                          value: selectedStakeholders[index]["role"]!.isNotEmpty
+                              ? selectedStakeholders[index]["role"]
+                              : null,
+                          onChanged: (value) {
+                            if (value != null && (!_isRoleSelectedElsewhere(value, index) ||
+                                value == "Additional")) {
+                              setState(() {
+                                selectedStakeholders[index]["role"] = value;
+                              });
+                              widget.onChanged?.call();
+                            }
+                          },
+                        ),
+                      ),
+                      // Icon button - takes 10% of available width
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          alignment: Alignment.center,
+                          child: index == 0
+                              ? IconButton(
+                                  icon: const Icon(Icons.add_circle, color: Colors.blue),
+                                  onPressed: _addStakeholder,
+                                  constraints: BoxConstraints.tight(const Size(40, 40)),
+                                )
+                              : index > 2
+                                  ? IconButton(
+                                      icon: const Icon(Icons.remove_circle, color: Colors.red),
+                                      onPressed: () => _removeStakeholder(index),
+                                      constraints: BoxConstraints.tight(const Size(40, 40)),
+                                    )
+                                  : const SizedBox(width: 40),
+                        ),
+                      ),
+                    ],
                   ),
                 );
               }),
@@ -299,13 +293,13 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
         children: [
           const Text("Stakeholders",
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 8),
+           const SizedBox(height: 8),
           Table(
             border: TableBorder.all(color: Colors.grey),
             columnWidths: {
-              0: FlexColumnWidth(3),
-              1: FlexColumnWidth(3),
-              2: FlexColumnWidth(3),
+              0: const FlexColumnWidth(0),
+              1: const FlexColumnWidth(0),
+              2: const FlexColumnWidth(0),
             },
             children: [
               TableRow(
@@ -341,7 +335,7 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
       onChanged: (_) => widget.onChanged?.call(),
       decoration: InputDecoration(
         labelText: label,
-        border: OutlineInputBorder(),
+        border: const OutlineInputBorder(),
       ),
     );
   }
@@ -371,9 +365,6 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
     return selectedStakeholders.map((s) {
       final rawUserId = s["userId"];
       final parsedUserId = int.tryParse(rawUserId ?? '') ?? -1;
-
-      print(
-          "Final userId to send: $parsedUserId, type: ${parsedUserId.runtimeType}");
 
       return Stakeholder(
         userId: parsedUserId,
