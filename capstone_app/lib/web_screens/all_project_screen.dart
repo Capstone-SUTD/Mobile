@@ -7,6 +7,7 @@ import '../web_common/project_table_widget.dart';
 import '../web_common/equipment_recommendation_widget.dart';
 import '../models/project_model.dart';
 import 'project_screen.dart';
+import '../common/login_signup_screen.dart';
 
 final RouteObserver<PageRoute> routeObserver = RouteObserver<PageRoute>();
 
@@ -168,13 +169,14 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
       ListTile(
         leading: const Icon(Icons.logout),
         title: const Text("Logout"),
-        onTap: () async {
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.remove('auth_token'); // Remove token
-          
-          Navigator.pushReplacementNamed(context, '/login'); // Navigate to login
-        },
-      ),
+        onTap: () {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginSignUpScreen()),
+      (route) => false,
+    );
+  },
+),
     ],
   ),
 ),

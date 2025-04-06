@@ -156,7 +156,7 @@ class _OffsiteChecklistWidgetState extends State<OffsiteChecklistWidget> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 300,
+      width: 1200,
       height: MediaQuery.of(context).size.height * 0.92,
       child: Container(
         padding: const EdgeInsets.all(16.0),

@@ -4,19 +4,19 @@ class ProjectTabWidget extends StatelessWidget {
   final int selectedTabIndex;
   final Function(int) onTabSelected;
   final List<String> tabTitles;
-
+  
   const ProjectTabWidget({
     super.key,
     required this.selectedTabIndex,
     required this.onTabSelected,
-    this.tabTitles = const ["Project Details","Offsite Checklist", "MS/RA Generation", "Onsite Checklist"],
+    this.tabTitles = const ["Project Details", "MS/RA Generation", "Onsite Checklist"],
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isSmallScreen = MediaQuery.of(context).size.width < 600;
-
+    
     return Container(
       decoration: BoxDecoration(
         color: theme.colorScheme.surfaceContainerHighest,
@@ -36,7 +36,7 @@ class ProjectTabWidget extends StatelessWidget {
       ),
     );
   }
-
+  
   Widget _buildTab({
     required BuildContext context,
     required String title,
@@ -45,7 +45,10 @@ class ProjectTabWidget extends StatelessWidget {
   }) {
     final theme = Theme.of(context);
     final isSelected = index == selectedTabIndex;
-
+    final isEnabled = index == 0 || 
+                     (index == 1 && selectedTabIndex >= 1) || 
+                     (index == 2 && selectedTabIndex >= 2);
+    
     return Expanded(
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 2),
@@ -53,7 +56,7 @@ class ProjectTabWidget extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
-            onTap: () => onTabSelected(index),
+            onTap: isEnabled ? () => onTabSelected(index) : null,
             child: Container(
               padding: EdgeInsets.symmetric(
                 vertical: isSmallScreen ? 10 : 12,
@@ -68,7 +71,11 @@ class ProjectTabWidget extends StatelessWidget {
                 title,
                 style: theme.textTheme.labelLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: isSelected ? theme.colorScheme.onPrimary : theme.colorScheme.onSurfaceVariant,
+                  color: isSelected 
+                      ? theme.colorScheme.onPrimary 
+                      : isEnabled 
+                          ? theme.colorScheme.onSurfaceVariant
+                          : theme.colorScheme.onSurfaceVariant.withOpacity(0.5),
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
