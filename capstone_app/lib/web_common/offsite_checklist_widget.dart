@@ -196,6 +196,11 @@ class _OffsiteChecklistWidgetState extends State<OffsiteChecklistWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const Text(
+          "Offsite Checklist",
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 10),
         Expanded(
           child: SingleChildScrollView(
             child: Column(

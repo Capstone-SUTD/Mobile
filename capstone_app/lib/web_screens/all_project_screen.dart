@@ -144,26 +144,11 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
             ),
           ),
         ],
-        
       ),
       drawer: Drawer(
   child: ListView(
     padding: EdgeInsets.zero,
     children: [
-      DrawerHeader(
-        decoration: const BoxDecoration(
-          color: Colors.deepPurple,
-        ),
-        child: const Text(
-          'Project Menu',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-          ),
-        ),
-      ),
-      const SizedBox(height: 20),
-    //children: [
       ListTile(
         leading: const Icon(Icons.build),
         title: const Text("Equipment Recommendation"),
