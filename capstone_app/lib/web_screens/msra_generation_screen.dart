@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:capstone_app/web_common/offsite_checklist_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,7 +37,7 @@ class _MSRAGenerationScreenState extends State<MSRAGenerationScreen> {
   }
 
   Future<void> _callApprovalStatusApi() async {
-  final url = Uri.parse('http://10.0.2.2:3000/app/approval-rejection-status');
+  final url = Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/app/approval-rejection-status');
 
   try {
     final prefs = await SharedPreferences.getInstance();
@@ -126,10 +127,36 @@ class _MSRAGenerationScreenState extends State<MSRAGenerationScreen> {
 
 
   void _onTabSelected(int index) {
-    if (index == 2) {
+    if (index == 0) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => OnsiteChecklistScreen(project: _project)),
+        PageRouteBuilder(
+          pageBuilder:(_, __, ___) => ProjectScreen(
+            projectId: _project?.projectId,
+          ),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+    if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => OffsiteChecklistWidget(project: _project),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+    if (index == 3) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => OnsiteChecklistScreen(project: _project),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
       );
     }
   }
@@ -158,7 +185,7 @@ Future<List<Stakeholder>> _fetchUpdatedStakeholders() async {
     }
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/project/stakeholder-comments'),
+      Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/stakeholder-comments'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json', // optional but recommended
@@ -195,7 +222,7 @@ Future<List<Stakeholder>> _fetchUpdatedStakeholders() async {
           children: [
             // **Project Tab Widget (Switch Between Tabs)**
             ProjectTabWidget(
-              selectedTabIndex: 1,
+              selectedTabIndex: 2,
               onTabSelected: _onTabSelected,
             ),
             const SizedBox(height: 20),

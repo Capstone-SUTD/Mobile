@@ -3,10 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../web_screens/msra_generation_screen.dart';
+import '../web_screens/onsite_checklist_screen.dart';
+import 'project_tab_widget.dart';
+import '../web_screens/project_screen.dart';
 
 class OffsiteChecklistWidget extends StatefulWidget {
-  final int projectId;
-  const OffsiteChecklistWidget({Key? key, required this.projectId}) : super(key: key);
+  final dynamic project;
+  // final int projectId;
+  const OffsiteChecklistWidget({Key? key, required this.project}) : super(key: key);
 
   @override
   _OffsiteChecklistWidgetState createState() => _OffsiteChecklistWidgetState();
@@ -17,10 +22,12 @@ class _OffsiteChecklistWidgetState extends State<OffsiteChecklistWidget> {
   Map<String, dynamic> checklistData = {};
   bool isLoading = true;
   String? errorMessage;
+  late dynamic _project;
 
   @override
   void initState() {
     super.initState();
+    _project = widget.project;
     _fetchChecklistData();
   }
 
@@ -39,7 +46,7 @@ class _OffsiteChecklistWidgetState extends State<OffsiteChecklistWidget> {
       }
 
       final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/project/get-project-checklist?projectid=${widget.projectId}"),
+        Uri.parse("https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/get-project-checklist?projectid=${_project.projectId}"),
         headers: {'Authorization': 'Bearer $token'},
       ).timeout(const Duration(seconds: 30));
 
@@ -116,7 +123,7 @@ class _OffsiteChecklistWidgetState extends State<OffsiteChecklistWidget> {
       }
 
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:3000/project/update-checklist-completion"),
+        Uri.parse("https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/update-checklist-completion"),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -153,19 +160,57 @@ class _OffsiteChecklistWidgetState extends State<OffsiteChecklistWidget> {
     }
   }
 
+  void _onTabSelected(int index) {
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder:(_, __, ___) => ProjectScreen(
+            projectId: _project?.projectId,
+          ),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+    if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => MSRAGenerationScreen(project: _project),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+    if (index == 3) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => OnsiteChecklistScreen(project: _project),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 1200,
-      height: MediaQuery.of(context).size.height * 0.92,
-      child: Container(
-        padding: const EdgeInsets.all(16.0),
-        margin: const EdgeInsets.only(right: 16),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.grey.shade300),
-          borderRadius: BorderRadius.circular(8),
+    return Scaffold(
+      appBar: AppBar(title: const Text("Offsite Checklist")),
+      body: SizedBox(
+        width: 1200,
+        height: MediaQuery.of(context).size.height * 0.92,
+        child: Container(
+          padding: const EdgeInsets.all(16.0),
+          margin: const EdgeInsets.only(right: 16),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey.shade300),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: _buildContent(), // this is your checklist UI
         ),
-        child: _buildContent(),
       ),
     );
   }
@@ -196,6 +241,11 @@ class _OffsiteChecklistWidgetState extends State<OffsiteChecklistWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        ProjectTabWidget(
+          selectedTabIndex: 1,
+          onTabSelected: _onTabSelected,
+        ),
+        const SizedBox(height: 16),
         const Text(
           "Offsite Checklist",
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),

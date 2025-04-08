@@ -135,7 +135,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
     }
 
     final response = await http.post(
-      Uri.parse('http://10.0.2.2:3000/project/new'),
+      Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/new'),
       headers: {
         'Authorization': 'Bearer $token',
         'Content-Type': 'application/json',
@@ -231,7 +231,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('http://10.0.2.2:3000/project/save'),
+        Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/save'),
       );
 
       request.headers['Authorization'] = 'Bearer $token';
@@ -267,7 +267,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
         );
 
         final generateChecklistResponse = await http.post(
-          Uri.parse('http://10.0.2.2:3000/project/generate-checklist'),
+          Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/generate-checklist'),
           headers: {
             'Authorization': 'Bearer $token',
             'Content-Type': 'application/json',
@@ -330,41 +330,59 @@ class _ProjectScreenState extends State<ProjectScreen> {
     }
   }
 
+  Future<Project?> fetchProjectById(String projectId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('auth_token');
+
+    final response = await http.get(
+      Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/list'),
+      headers: {
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+      final projectJson = data.firstWhere(
+          (p) => p['projectid'].toString() == projectId,
+          orElse: () => null);
+      return projectJson != null ? Project.fromJson(projectJson) : null;
+    }
+    return null;
+  }
+
   void onTabSelected(int index) {
     setState(() {
       selectedTabIndex = index;
     });
 
+    Widget screen;
+
     switch (index) {
+      case 0:
+        screen = ProjectScreen(projectId: _project?.projectId);
+        break;
       case 1:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MSRAGenerationScreen(project: _project),
-          ),
-        );
+        screen = OffsiteChecklistWidget(project: _project);
         break;
       case 2:
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OnsiteChecklistScreen(project: _project),
-          ),
-        );
+        screen = MSRAGenerationScreen(project: _project);
         break;
-      case 3: // Navigate to Offsite Checklist
-        setState(() {
-          showOffsiteChecklist = true;
-        });
-        Future.delayed(Duration(milliseconds: 100), () {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 500),
-            curve: Curves.easeOut,
-          );
-        });
+      case 3:
+        screen = OnsiteChecklistScreen(project: _project);
         break;
+      default:
+        return;
     }
+
+    Navigator.pushReplacement(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => screen,
+        transitionDuration: Duration.zero,
+        reverseTransitionDuration: Duration.zero,
+      ),
+    );
   }
 
   @override
@@ -517,7 +535,7 @@ class _ProjectScreenState extends State<ProjectScreen> {
 
                                     try {
                                       final response = await http.post(
-                                        Uri.parse('http://10.0.2.2:3000/project/generate-docs'),
+                                        Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/generate-docs'),
                                         headers: {
                                           'Authorization': 'Bearer $token',
                                           'Content-Type': 'application/json',
@@ -562,20 +580,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
                         ),
                       ],
                       const SizedBox(height: 10),
-                    ],
-                    
-                    // Offsite checklist section - now placed directly underneath
-                    if (showOffsiteChecklist && shouldShowChecklistToggle) ...[
-                      //const Divider(height: 30, thickness: 1),
-                      // const Text(
-                      //   "Offsite Checklist",
-                      //   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      // ),
-                      const SizedBox(height: 10),
-                      // Make the OffsiteChecklistWidget directly embedded without borders
-                      OffsiteChecklistWidget(
-                        projectId: int.tryParse(_project?.projectId.toString() ?? '0') ?? 0,
-                      ),
                     ],
                   ],
                 ),

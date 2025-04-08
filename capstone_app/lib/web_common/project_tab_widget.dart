@@ -9,7 +9,7 @@ class ProjectTabWidget extends StatelessWidget {
     super.key,
     required this.selectedTabIndex,
     required this.onTabSelected,
-    this.tabTitles = const ["Project Details", "MS/RA Generation", "Onsite Checklist"],
+    this.tabTitles = const ["Project Details", "Offsite Checklist", "MS/RA Generation", "Onsite Checklist"],
   });
 
   @override
@@ -45,9 +45,7 @@ class ProjectTabWidget extends StatelessWidget {
   }) {
     final theme = Theme.of(context);
     final isSelected = index == selectedTabIndex;
-    final isEnabled = index == 0 || 
-                     (index == 1 && selectedTabIndex >= 1) || 
-                     (index == 2 && selectedTabIndex >= 2);
+    final isEnabled = true;
     
     return Expanded(
       child: Padding(

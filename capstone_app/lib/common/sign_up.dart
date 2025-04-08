@@ -27,7 +27,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     try {
       Dio dio = Dio();
       final response = await dio.post(
-        'http://10.0.2.2:3000/auth/register',
+        'https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/auth/register',
         data: {
           'username': username,
           'email': email,

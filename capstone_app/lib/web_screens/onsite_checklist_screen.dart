@@ -9,6 +9,7 @@ import '../web_common/project_stepper_widget.dart';
 import 'msra_generation_screen.dart';
 import '../web_common/step_label.dart';
 import 'project_screen.dart';
+import '../web_common/offsite_checklist_widget.dart';
 
 /// File data holder for cross-platform file operations
 class PickedFileData {
@@ -256,7 +257,7 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
       final token = prefs.getString('auth_token');
 
       final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/project/get-project-checklist?projectid=${_project.projectId}"),
+        Uri.parse("https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/get-project-checklist?projectid=${_project.projectId}"),
         headers: {'Authorization': 'Bearer $token'},
       );
 
@@ -298,7 +299,7 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
       final token = prefs.getString('auth_token');
 
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:3000/project/update-checklist-completion"),
+        Uri.parse("https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/update-checklist-completion"),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -316,6 +317,41 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
     }
   }
 
+  void _onTabSelected(int index) {
+    if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder:(_, __, ___) => ProjectScreen(
+            projectId: _project?.projectId,
+          ),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+    if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => OffsiteChecklistWidget(project: _project),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+    if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (_, __, ___) => MSRAGenerationScreen(project: _project),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -329,17 +365,19 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
               child: Column(
                 children: [
                   ProjectTabWidget(
-                    selectedTabIndex: 2,
-                    onTabSelected: (index) {
-                      if (index == 1) {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MSRAGenerationScreen(project: _project),
-                          ),
-                        );
-                      }
-                    },
+                    selectedTabIndex: 3,
+                    onTabSelected: _onTabSelected, 
+                    // {
+                      // if (index == 1) 
+                      //{
+                      //  Navigator.pushReplacement(
+                      //    context,
+                      //    MaterialPageRoute(
+                      //      builder: (context) => MSRAGenerationScreen(project: _project),
+                      //    ),
+                      //  );
+                      //}
+                    // },
                   ),
                   const SizedBox(height: 20),
                   // ProjectStepperWidget(
@@ -435,7 +473,7 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
       final token = prefs.getString('auth_token');
 
       final response = await http.post(
-        Uri.parse("http://10.0.2.2:3000/project/add-task-comments"),
+        Uri.parse("https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/add-task-comments"),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -464,7 +502,7 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
 
       final request = http.MultipartRequest(
         'POST',
-        Uri.parse("http://10.0.2.2:3000/project/upload-blob-azure"),
+        Uri.parse("https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/upload-blob-azure"),
       );
       request.headers['Authorization'] = 'Bearer $token';
       request.fields['taskid'] = taskId.toString();

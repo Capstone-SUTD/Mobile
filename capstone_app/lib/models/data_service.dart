@@ -12,7 +12,7 @@ class DataService {
     print("Fetching projects with token: $token"); // Debug
     
     final response = await http.get(
-      Uri.parse('http://10.0.2.2:3000/project/list'),
+      Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/list'),
       headers: {
         'Authorization': 'Bearer $token',
       },
