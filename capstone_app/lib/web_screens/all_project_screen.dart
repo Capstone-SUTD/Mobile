@@ -48,7 +48,7 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
       }
 
       final response = await http.get(
-        Uri.parse('http://10.0.2.2:3000/project/list'),
+        Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/list'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -125,21 +125,6 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
                             : ProjectTableWidget(projects: projectsList),
                   ),
                   const SizedBox(height: 16),
-                  // Row(
-                  //   mainAxisAlignment: MainAxisAlignment.center,
-                  //   children: [
-                  //     ElevatedButton(
-                  //       onPressed: () => _openEquipmentRecommendation(context),
-                  //       child: const Text("Equipment Recommendation"),
-                  //     ),
-                  //     const SizedBox(width: 16),
-                  //     ElevatedButton.icon(
-                  //       onPressed: () => _createNewProject(context),
-                  //       icon: const Icon(Icons.add),
-                  //       label: const Text("New Project"),
-                  //     ),
-                  //   ],
-                  // ),
                 ],
               ),
             ),
@@ -147,40 +132,45 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
         ],
       ),
       drawer: Drawer(
-  child: ListView(
-    padding: EdgeInsets.zero,
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      ListTile(
-        leading: const Icon(Icons.build),
-        title: const Text("Equipment Recommendation"),
-        onTap: () {
-          Navigator.pop(context); // Close drawer
-          _openEquipmentRecommendation(context);
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.add),
-        title: const Text("New Project"),
-        onTap: () {
-          Navigator.pop(context); // Close drawer
-          _createNewProject(context);
-        },
-      ),
-      ListTile(
-        leading: const Icon(Icons.logout),
-        title: const Text("Logout"),
-        onTap: () {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => LoginSignUpScreen()),
-      (route) => false,
-    );
-  },
+      ListView(
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.build),
+            title: const Text("Equipment Recommendation", textAlign: TextAlign.center),
+            onTap: () {
+              Navigator.pop(context); // Close drawer
+              _openEquipmentRecommendation(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: const Text("New Project", textAlign: TextAlign.center),
+            onTap: () {
+              Navigator.pop(context); // Close drawer
+              _createNewProject(context);
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text("Logout", textAlign: TextAlign.center),
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => LoginSignUpScreen()),
+                (route) => false,
+              );
+       },
 ),
     ],
   ),
-),
-
+    ],
+  ),
+      ),
     );
   }
 
