@@ -39,7 +39,7 @@ class _EquipmentRecommendationDialogState
       final token = prefs.getString('auth_token') ?? "";
 
       final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/project/equipment'),
+        Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/equipment'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json',
@@ -98,7 +98,7 @@ class _EquipmentRecommendationDialogState
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           child: SizedBox(
             width: 400,
-            height: 480,
+            height: 520,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -199,12 +199,12 @@ class _EquipmentRecommendationDialogState
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       content: SizedBox(
         width: 400,
-        height: 315,
+        height: 330,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Form(
             key: _formKey,
-            child: SingleChildScrollView(
+            //child: SingleChildScrollView(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -269,7 +269,7 @@ class _EquipmentRecommendationDialogState
             ),
           ),
         ),
-      ),
+      //),
       actions: [
         TextButton(
           onPressed: _isLoading ? null : () => Navigator.pop(context),
