@@ -400,8 +400,6 @@ class _ProjectScreenState extends State<ProjectScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(isNewProject ? "New Project" : _project!.projectName),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
