@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../web_common/project_tab_widget.dart';
-import '../web_common/project_stepper_widget.dart';
+//import '../web_common/project_stepper_widget.dart';
 import '../web_common/download_msra_widget.dart';
 import '../web_common/approval_list_widget.dart';
 import '../web_common/feedback_close_widget.dart';
@@ -143,7 +143,10 @@ class _MSRAGenerationScreenState extends State<MSRAGenerationScreen> {
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
-          pageBuilder: (_, __, ___) => OffsiteChecklistWidget(project: _project),
+          pageBuilder: (_, __, ___) => OffsiteChecklistWidget(
+            project: _project,
+            //projectId: _project?.projectId ?? "",//
+          ),
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         ),

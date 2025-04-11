@@ -10,7 +10,7 @@ import '../web_screens/project_screen.dart';
 
 class OffsiteChecklistWidget extends StatefulWidget {
   final dynamic project;
-  // final int projectId;
+  //final int projectId;
   const OffsiteChecklistWidget({Key? key, required this.project}) : super(key: key);
 
   @override

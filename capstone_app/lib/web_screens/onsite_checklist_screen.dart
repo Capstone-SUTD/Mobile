@@ -152,7 +152,7 @@ class _CommentsConversationPopupState extends State<CommentsConversationPopup> {
       final token = prefs.getString('auth_token');
 
       final response = await http.get(
-        Uri.parse("http://10.0.2.2:3000/project/get-task-comments?taskid=${widget.taskId}"),
+        Uri.parse("https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/get-task-comments?taskid=${widget.taskId}"),
         headers: {'Authorization': 'Bearer $token'},
       );
 
@@ -212,7 +212,7 @@ class _CommentsConversationPopupState extends State<CommentsConversationPopup> {
       final token = prefs.getString('auth_token');
 
       final response = await http.delete(
-        Uri.parse("http://10.0.2.2:3000/project/delete-task-comment?commentid=$commentId"),
+        Uri.parse("https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/delete-task-comment?commentid=$commentId"),
         headers: {'Authorization': 'Bearer $token'},
       );
 

@@ -409,22 +409,22 @@ class _ProjectScreenState extends State<ProjectScreen> {
             Navigator.pop(context);
           },
         ),
-        actions: shouldShowChecklistToggle ? [
-          // Only show toggle button in app bar
-          TextButton.icon(
-            icon: Icon(
-              showOffsiteChecklist ? Icons.visibility_off : Icons.visibility,
-              color: Theme.of(context).primaryTextTheme.bodyLarge?.color,
-            ),
-            label: Text(
-              showOffsiteChecklist ? "Hide Checklist" : "Show Checklist",
-              style: TextStyle(
-                color: Theme.of(context).primaryTextTheme.bodyLarge?.color,
-              ),
-            ),
-            onPressed: toggleOffsiteChecklist,
-          ),
-        ] : null,
+        // actions: shouldShowChecklistToggle ? [
+        //   // Only show toggle button in app bar
+        //   TextButton.icon(
+        //     icon: Icon(
+        //       showOffsiteChecklist ? Icons.visibility_off : Icons.visibility,
+        //       color: Theme.of(context).primaryTextTheme.bodyLarge?.color,
+        //     ),
+        //     label: Text(
+        //       showOffsiteChecklist ? "Hide Checklist" : "Show Checklist",
+        //       style: TextStyle(
+        //         color: Theme.of(context).primaryTextTheme.bodyLarge?.color,
+        //       ),
+        //     ),
+        //     onPressed: toggleOffsiteChecklist,
+        //   ),
+        // ] : null,
       ),
       body: Column(
         children: [

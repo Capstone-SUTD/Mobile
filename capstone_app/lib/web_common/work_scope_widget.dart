@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import '../models/project_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+
+const String _prefsKey = 'custom_equipment_options';
 
 class WorkScopeWidget extends StatefulWidget {
   final bool isNewProject;
   final List<Scope>? workScopeList;
+  final VoidCallback? onWorkScopeChanged;
 
-  const WorkScopeWidget({Key? key, required this.isNewProject, this.workScopeList}) : super(key: key);
+  const WorkScopeWidget({
+    Key? key, 
+    required this.isNewProject, 
+    this.workScopeList,
+    this.onWorkScopeChanged,
+    }) : super(key: key);
 
   @override
   WorkScopeWidgetState createState() => WorkScopeWidgetState();
@@ -17,6 +28,33 @@ class WorkScopeWidgetState extends State<WorkScopeWidget> {
   bool get isReadOnly => !widget.isNewProject && widget.workScopeList != null && widget.workScopeList!.isNotEmpty;
 
   List<Map<String, String>> getWorkScopeData() => _workScopeList;
+
+  List<String> _defaultEquipmentOptions = [
+    "8ft X 40ft Trailer",
+    "8ft X 45ft Trailer",
+    "8ft X 50ft Trailer",
+    "10.5ft X 30ft Low Bed",
+    "10.5ft X 40ft Low Bed",
+    "Self Loader",
+  ];
+
+  Set<String> _customEquipmentOptions = {};
+  Map<int, TextEditingController> _controllers = {};
+
+  Future<void> _saveCustomEquipmentOptions() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList(_prefsKey, _customEquipmentOptions.toList());
+  }
+
+  Future<void> _loadCustomEquipmentOptions() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedOptions = prefs.getStringList(_prefsKey);
+    if (savedOptions != null) {
+      setState(() {
+        _customEquipmentOptions = savedOptions.toSet();
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -41,18 +79,29 @@ class WorkScopeWidgetState extends State<WorkScopeWidget> {
     setState(() {
       _workScopeList.add({"startDestination": "", "endDestination": "", "scope": "", "equipmentList": ""});
     });
+    widget.onWorkScopeChanged?.call();
   }
 
   void _updateWorkScope(int index, String key, String value) {
     setState(() {
       _workScopeList[index][key] = value;
     });
+    widget.onWorkScopeChanged?.call();
   }
 
   void _removeRow(int index) {
     setState(() {
       _workScopeList.removeAt(index);
     });
+    widget.onWorkScopeChanged?.call();
+  }
+
+    @override
+  void dispose() {
+    for (var controller in _controllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
   }
 
   @override
@@ -172,66 +221,131 @@ class WorkScopeWidgetState extends State<WorkScopeWidget> {
   }
 
   // Equipment Cell
-  Widget _buildEquipmentCell(int index) {
-    String equipmentValue = _workScopeList[index]["equipmentList"] ?? "";
+    Widget _buildEquipmentCell(int index) {
+    String currentValue = _workScopeList[index]["equipmentList"] ?? "";
+    _controllers[index] ??= TextEditingController(text: currentValue);
 
-    if (isReadOnly) {
-      return Padding(
+    return TableCell(
+      child: Padding(
         padding: const EdgeInsets.all(8),
-        child: Text(
-          equipmentValue,
-          textAlign: TextAlign.center,
-        ),
-      );
-    }
+        child: isReadOnly
+            ? Text(currentValue, textAlign: TextAlign.center)
+            : ConstrainedBox(
+                constraints: const BoxConstraints(minWidth: 200, maxWidth: 300),
+                child: _workScopeList[index]["scope"] == "Lifting"
+                    ? TextFormField(
+                        textAlign: TextAlign.center,
+                        onChanged: (value) {
+                          _updateWorkScope(index, "equipmentList", "$value ton crane");
+                        },
+                        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                        cursorColor: Colors.black87,
+                        decoration: const InputDecoration(
+                          labelText: "Enter Crane Threshold (Tons)",
+                          border: InputBorder.none,
+                          isDense: true,
+                          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          labelStyle: const TextStyle(color: Colors.black87),
+                        ),
+                      )
+                    : _workScopeList[index]["scope"] == "Transportation"
+                        ? Row(
+                            children: [
+                              Expanded(
+                                child: TypeAheadFormField<String>(
+                                  textFieldConfiguration: TextFieldConfiguration(
+                                    controller: _controllers[index]!,
+                                    onEditingComplete: () {
+                                      String newValue = _controllers[index]!.text.trim();
+                                      if (!_defaultEquipmentOptions.contains(newValue) &&
+                                          !_customEquipmentOptions.contains(newValue) &&
+                                          newValue.isNotEmpty) {
+                                        setState(() {
+                                          _customEquipmentOptions.add(newValue);
+                                        });
+                                        _saveCustomEquipmentOptions();
+                                      }
+                                      _updateWorkScope(index, "equipmentList", newValue);
+                                      FocusScope.of(context).unfocus();
+                                    },
+                                    cursorColor: Colors.black87,
+                                    decoration: const InputDecoration(
+                                      labelText: "Select or Add Equipment",
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                                      labelStyle: const TextStyle(color: Colors.black87),
+                                      focusedBorder: UnderlineInputBorder(
+                                        borderSide: BorderSide(color: Colors.black87, width: 2),
+                                      ),
+                                    ),
+                                  ),
+                                  suggestionsCallback: (pattern) {
+                                    return [
+                                      ..._defaultEquipmentOptions,
+                                      ..._customEquipmentOptions
+                                    ].where((item) => item.toLowerCase().contains(pattern.toLowerCase()));
+                                  },
+                                  itemBuilder: (context, suggestion) {
+                                    return ListTile(title: Text(suggestion));
+                                  },
+                                  onSuggestionSelected: (suggestion) {
+                                    _controllers[index]!.text = suggestion;
+                                    _updateWorkScope(index, "equipmentList", suggestion);
+                                  },
+                                ),
+                              ),
+                              if (!_defaultEquipmentOptions.contains(currentValue) &&
+                                  currentValue.isNotEmpty)
+                                  IconButton(
+                                    icon: const Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () async {
+                                      final confirmed = await showDialog<bool>(
+                                        context: context,
+                                        builder: (context) => AlertDialog(
+                                          title: const Text("Confirm Delete"),
+                                          content: Text("Are you sure you want to delete \"$currentValue\" from your custom equipment list?"),
+                                          actions: [
+                                            TextButton(
+                                              child: const Text("Cancel"),
+                                              onPressed: () => Navigator.of(context).pop(false),
+                                            ),
+                                            TextButton(
+                                              child: const Text("Delete", style: TextStyle(color: Colors.red)),
+                                              onPressed: () => Navigator.of(context).pop(true),
+                                            ),
+                                          ],
+                                        ),
+                                      );
 
-    // For editable mode
-    String labelText = "";
-    String suffix = "";
-    
-    if (_workScopeList[index]["scope"] == "Lifting") {
-      labelText = "Enter Crane Threshold";
-      suffix = "ton crane";
-    } else if (_workScopeList[index]["scope"] == "Transportation") {
-      labelText = "Enter Trailer";
-      suffix = "trailer";
-    }
-
-    return Padding(
-      padding: const EdgeInsets.all(8),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SizedBox(
-            width: 120,
-            child: TextFormField(
-              initialValue: equipmentValue.isNotEmpty 
-                  ? equipmentValue.replaceAll(suffix, "").trim() 
-                  : "",
-              textAlign: TextAlign.center,
-              onChanged: (value) {
-                if (_workScopeList[index]["scope"] == "Lifting") {
-                  _updateWorkScope(index, "equipmentList", "$value $suffix");
-                } else if (_workScopeList[index]["scope"] == "Transportation") {
-                  _updateWorkScope(index, "equipmentList", "$value $suffix");
-                } else {
-                  _updateWorkScope(index, "equipmentList", value);
-                }
-              },
-              decoration: InputDecoration(
-                labelText: labelText,
-                border: InputBorder.none,
-                contentPadding: const EdgeInsets.symmetric(vertical: 8),
+                                      if (confirmed == true) {
+                                        setState(() {
+                                          _customEquipmentOptions.remove(currentValue);
+                                          _workScopeList[index]["equipmentList"] = "";
+                                          _controllers[index]!.clear();
+                                        });
+                                        _saveCustomEquipmentOptions();
+                                      }
+                                    },
+                                  ),
+                            ],
+                          )
+                        : TextFormField(
+                            initialValue: currentValue,
+                            textAlign: TextAlign.center,
+                            onChanged: (value) {
+                              _updateWorkScope(index, "equipmentList", value);
+                            },
+                            cursorColor: Colors.black87,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              isDense: true,
+                              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                            ),
+                          ),
               ),
-            ),
-          ),
-          if (suffix.isNotEmpty) 
-            Text(" $suffix"),
-        ],
       ),
     );
   }
-
   // Action Button Cell
   Widget _buildActionButtons(int index) {
     return Padding(

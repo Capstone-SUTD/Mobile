@@ -62,7 +62,7 @@ class _FeedbackAndCloseState extends State<FeedbackAndClose> {
         }
 
         final response = await http.post(
-        Uri.parse('http://10.0.2.2:3000/project/feedback'),
+        Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/feedback'),
         headers: {
             'Authorization': 'Bearer $token',
             'Content-Type': 'application/json', // optional but recommended

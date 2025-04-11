@@ -57,7 +57,7 @@ class _ApprovalListWidgetState extends State<ApprovalListWidget> {
   }
 
   Future<void> _approveProject(int projectId) async {
-    final url = Uri.parse('http://10.0.2.2:3000/app/approve');
+    final url = Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/app/approve');
 
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -202,7 +202,7 @@ class _ApprovalListWidgetState extends State<ApprovalListWidget> {
   }
 
   Future<void> _rejectProject(Map<String, dynamic> approval, String comments) async {
-    final url = Uri.parse('http://10.0.2.2:3000/app/reject');
+    final url = Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/app/reject');
 
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -288,7 +288,7 @@ class _ApprovalListWidgetState extends State<ApprovalListWidget> {
 
         var request = http.MultipartRequest(
           'POST',
-          Uri.parse('http://10.0.2.2:3000/app/reupload'),
+          Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/app/reupload'),
         )
           ..headers['Authorization'] = 'Bearer $token'
           ..fields['projectid'] = projectId.toString()

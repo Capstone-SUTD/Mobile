@@ -132,6 +132,7 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
         ],
       ),
       drawer: Drawer(
+      backgroundColor: Colors.teal,
   child: Column(
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
@@ -140,24 +141,24 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
         padding: EdgeInsets.zero,
         children: [
           ListTile(
-            leading: const Icon(Icons.build),
-            title: const Text("Equipment Recommendation", textAlign: TextAlign.center),
+            leading: const Icon(Icons.build, color: Colors.white,),
+            title: const Text("Equipment Recommendation", textAlign: TextAlign.center, style:TextStyle(color: Colors.white),),
             onTap: () {
               Navigator.pop(context); // Close drawer
               _openEquipmentRecommendation(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add),
-            title: const Text("New Project", textAlign: TextAlign.center),
+            leading: const Icon(Icons.add, color: Colors.white,),
+            title: const Text("New Project", textAlign: TextAlign.center, style:TextStyle(color: Colors.white),),
             onTap: () {
               Navigator.pop(context); // Close drawer
               _createNewProject(context);
             },
           ),
           ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text("Logout", textAlign: TextAlign.center),
+            leading: const Icon(Icons.logout, color: Colors.white,),
+            title: const Text("Logout", textAlign: TextAlign.center, style:TextStyle(color: Colors.white),),
             onTap: () {
               Navigator.pushAndRemoveUntil(
                 context,
@@ -176,8 +177,9 @@ class _AllProjectsScreenState extends State<AllProjectsScreen> with AutomaticKee
 
   PreferredSizeWidget _buildAppBar() {
     return AppBar(
-      title: const Text("All Projects"),
-      backgroundColor: Colors.white,
+      title: const Text("All Projects", style: TextStyle(color: Colors.white)),
+      backgroundColor: Colors.teal,
+      foregroundColor: Colors.white,
       elevation: 1,
     );
   }

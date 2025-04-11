@@ -89,7 +89,7 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
       }
 
       final response = await http.get(
-        Uri.parse('http://localhost:5000/project/stakeholders'),
+        Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/stakeholders'),
         headers: {
           'Authorization': 'Bearer $token',
           'Content-Type': 'application/json', // optional but recommended
@@ -129,8 +129,7 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
   bool _isRoleSelectedElsewhere(String role, int currentIndex) {
     return selectedStakeholders.any((s) =>
         s["role"] == role &&
-        role != "Additional" &&
-        selectedStakeholders.indexOf(s) != currentIndex);
+        role != "Additional" && selectedStakeholders.indexOf(s) != currentIndex);
   }
 
   // Add a New Stakeholder Row
@@ -151,7 +150,7 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -167,123 +166,127 @@ class ProjectFormWidgetState extends State<ProjectFormWidget> {
 
           if (widget.isNewProject)
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: List.generate(selectedStakeholders.length, (index) {
                 return Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: LayoutBuilder(
-                    builder: (context, constraints) {
-                      double totalWidth = constraints.maxWidth;
-                      double fieldWidth = (totalWidth - 60) / 2; // account for padding + icon
+  padding: const EdgeInsets.only(bottom: 10),
+  child: Row(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      // Stakeholder Dropdown
+      Expanded(
+        flex: 3,
+        child: DropdownButtonFormField<String>(
+          isDense: true,
+          isExpanded: true,
+          decoration: const InputDecoration(
+            labelText: "Select Stakeholder",
+            border: OutlineInputBorder(),
+          ),
+          items: stakeholdersList.map((s) {
+            bool isDisabled = _isUserSelectedElsewhere(s["userId"]!, index);
+            return DropdownMenuItem(
+              value: s["userId"],
+              child: Text(
+                s["name"]!,
+                style: TextStyle(
+                  color: isDisabled ? Colors.grey : Colors.black,
+                ),
+              ),
+              enabled: !isDisabled,
+            );
+          }).toList(),
+          value: selectedStakeholders[index]["userId"]!.isNotEmpty
+              ? selectedStakeholders[index]["userId"]
+              : null,
+          onChanged: (value) {
+            if (_isUserSelectedElsewhere(value!, index)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('User already assigned to another role.'),
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              return;
+            }
+            setState(() {
+              selectedStakeholders[index]["userId"] = value;
+              final selectedStakeholder =
+                  stakeholdersList.firstWhere((s) => s["userId"] == value);
+              selectedStakeholders[index]["name"] =
+                  selectedStakeholder["name"]!;
+            });
+            widget.onChanged?.call();
+          },
+        ),
+      ),
+      const SizedBox(width: 10),
 
-                      return Row(
-                        children: [
-                          SizedBox(
-                            width: fieldWidth,
-                            child: DropdownButtonFormField<String>(
-                              isDense: true,
-                              decoration: const InputDecoration(
-                                labelText: "Select Stakeholder",
-                                border: OutlineInputBorder(),
-                              ),
-                              items: stakeholdersList.map((s) {
-                                final isDisabled = _isUserSelectedElsewhere(s["userId"]!, index);
-                                return DropdownMenuItem(
-                                  value: s["userId"],
-                                  enabled: !isDisabled,
-                                  child: Text(
-                                    s["name"]!,
-                                    style: TextStyle(
-                                      color: isDisabled ? Colors.grey : Colors.black,
-                                    ),
-                                  ),
-                                );
-                              }).toList(),
-                              value: selectedStakeholders[index]["userId"]!.isNotEmpty
-                                  ? selectedStakeholders[index]["userId"]
-                                  : null,
-                              onChanged: (value) {
-                                if (_isUserSelectedElsewhere(value!, index)) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('User already assigned to another role.'),
-                                      duration: Duration(seconds: 2),
-                                    ),
-                                  );
-                                  return;
-                                }
-                                setState(() {
-                                  selectedStakeholders[index]["userId"] = value;
-                                  final selectedStakeholder =
-                                      stakeholdersList.firstWhere((s) => s["userId"] == value);
-                                  selectedStakeholders[index]["name"] = selectedStakeholder["name"]!;
-                                });
-                                widget.onChanged?.call();
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          SizedBox(
-                            width: fieldWidth,
-                            child: DropdownButtonFormField<String>(
-                              isDense: true,
-                              decoration: const InputDecoration(
-                                labelText: "Role",
-                                border: OutlineInputBorder(),
-                              ),
-                              items: _roleOptions.map((role) {
-                                bool isDisabled = _isRoleSelectedElsewhere(role, index);
-                                return DropdownMenuItem(
-                                  value: role,
-                                  child: Text(
-                                    role,
-                                    style: TextStyle(
-                                      color: isDisabled ? Colors.grey : Colors.black,
-                                    ),
-                                  ),
-                                  enabled: !isDisabled || role == "Additional",
-                                );
-                              }).toList(),
-                              value: selectedStakeholders[index]["role"]!.isNotEmpty
-                                  ? selectedStakeholders[index]["role"]
-                                  : null,
-                              onChanged: (value) {
-                                if (!_isRoleSelectedElsewhere(value!, index) ||
-                                    value == "Additional") {
-                                  setState(() {
-                                    selectedStakeholders[index]["role"] = value;
-                                  });
-                                  widget.onChanged?.call();
-                                }
-                              },
-                            ),
-                          ),
-                          const SizedBox(width: 10),
-                          SizedBox(
-                            width: 40,
-                            child: index == 0
-                                ? IconButton(
-                                    icon: const Icon(Icons.add_circle,
-                                        color: Colors.blue),
-                                    onPressed: _addStakeholder,
-                                  )
-                                : index > 2
-                                    ? IconButton(
-                                        icon: const Icon(Icons.remove_circle,
-                                            color: Colors.red),
-                                        onPressed: () => _removeStakeholder(index),
-                                      )
-                                    : const SizedBox.shrink(),
-                          )
-                        ],
-                      );
-                    },
-                  ),
-                );
+      // Role Dropdown
+      Expanded(
+        flex: 3,
+        child: DropdownButtonFormField<String>(
+          isDense: true,
+          isExpanded: true,
+          decoration: const InputDecoration(
+            labelText: "Role",
+            border: OutlineInputBorder(),
+          ),
+          items: _roleOptions.map((role) {
+            bool isDisabled = _isRoleSelectedElsewhere(role, index);
+            return DropdownMenuItem(
+              value: role,
+              child: Text(
+                role,
+                style: TextStyle(
+                  color: isDisabled ? Colors.grey : Colors.black,
+                ),
+              ),
+              enabled: !isDisabled || role == "Additional",
+            );
+          }).toList(),
+          value: selectedStakeholders[index]["role"]!.isNotEmpty
+              ? selectedStakeholders[index]["role"]
+              : null,
+          onChanged: (value) {
+            if (!_isRoleSelectedElsewhere(value!, index) ||
+                value == "Additional") {
+              setState(() {
+                selectedStakeholders[index]["role"] = value;
+              });
+              widget.onChanged?.call();
+            }
+          },
+        ),
+      ),
+      const SizedBox(width: 10),
+
+      // Add or Remove Button
+      SizedBox(
+        width: 40,
+        child: index == 0
+            ? IconButton(
+                icon: const Icon(Icons.add_circle, color: Colors.blue),
+                onPressed: _addStakeholder,
+              )
+            : index > 2
+                ? IconButton(
+                    icon: const Icon(Icons.remove_circle, color: Colors.red),
+                    onPressed: () => _removeStakeholder(index),
+                  )
+                : const SizedBox.shrink(),
+      ),
+    ],
+  ),
+);
+               // );
               }),
-            ),
+              ),
+            
+          
 
           const SizedBox(height: 16),
-          _buildTextField("Email Subject Header", _emailController),
+          _buildTextField("Email Subject Header", _emailController),    
           const SizedBox(height: 16),
           _buildTextField("Start Date", _startDateController, readOnly: true),
         ],
