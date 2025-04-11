@@ -217,7 +217,7 @@ Future<List<Stakeholder>> _fetchUpdatedStakeholders() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("MS/RA Generation")),
+      appBar: AppBar(title: const Text("MS/RA Generation"), backgroundColor: Colors.teal, foregroundColor: Colors.white,),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
