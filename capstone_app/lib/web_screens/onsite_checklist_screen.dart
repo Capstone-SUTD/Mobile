@@ -357,8 +357,6 @@ class _OnsiteChecklistScreenState extends State<OnsiteChecklistScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Onsite Checklist"),
-        backgroundColor: Colors.teal,
-        foregroundColor: Colors.white,
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())

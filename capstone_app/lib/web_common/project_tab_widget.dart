@@ -61,7 +61,7 @@ class ProjectTabWidget extends StatelessWidget {
                 horizontal: isSmallScreen ? 4 : 8,
               ),
               decoration: BoxDecoration(
-                color: isSelected ? Colors.teal : Colors.transparent,
+                color: isSelected ? theme.colorScheme.primary : Colors.transparent,
                 borderRadius: BorderRadius.circular(8),
               ),
               alignment: Alignment.center,

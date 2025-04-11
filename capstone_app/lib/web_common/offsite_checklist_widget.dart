@@ -198,10 +198,7 @@ class _OffsiteChecklistWidgetState extends State<OffsiteChecklistWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Offsite Checklist"),
-      backgroundColor: Colors.teal,
-      foregroundColor: Colors.white,
-      ),
+      appBar: AppBar(title: const Text("Offsite Checklist")),
       body: SizedBox(
         width: 1200,
         height: MediaQuery.of(context).size.height * 0.92,
