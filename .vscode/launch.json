@@ -6,8 +6,8 @@
       "type": "lldb",
       "request": "launch",
       "args": [],
-      "cwd": "/Users/kripashree/Documents/GitHub/Mobile/capstone_app",
-      "program": "/Users/kripashree/Documents/GitHub/Mobile/capstone_app/build/Debug/outDebug"
+      "cwd": "/Users/kripashree/Documents/GitHub/Mobile/OOG_Navigator",
+      "program": "/Users/kripashree/Documents/GitHub/Mobile/OOG_Navigator/build/Debug/outDebug"
     }
   ]
 }

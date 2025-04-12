@@ -1,0 +1,2 @@
+/Users/kripashree/Documents/GitHub/Mobile/OOG_Navigator/android/app/.cxx/Debug/29274f17/x86/CMakeFiles/edit_cache.dir
+/Users/kripashree/Documents/GitHub/Mobile/OOG_Navigator/android/app/.cxx/Debug/29274f17/x86/CMakeFiles/rebuild_cache.dir

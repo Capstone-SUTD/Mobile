@@ -1,0 +1,2 @@
+/Users/kripashree/Documents/GitHub/Mobile/OOG_Navigator/android/app/.cxx/RelWithDebInfo/641o6m2j/armeabi-v7a/CMakeFiles/edit_cache.dir
+/Users/kripashree/Documents/GitHub/Mobile/OOG_Navigator/android/app/.cxx/RelWithDebInfo/641o6m2j/armeabi-v7a/CMakeFiles/rebuild_cache.dir
