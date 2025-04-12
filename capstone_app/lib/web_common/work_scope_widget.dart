@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/project_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+//import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 const String _prefsKey = 'custom_equipment_options';
 
@@ -252,97 +252,64 @@ class WorkScopeWidgetState extends State<WorkScopeWidget> {
                         ? Row(
                             children: [
                               Expanded(
-                                child: TypeAheadFormField<String>(
-                                  textFieldConfiguration: TextFieldConfiguration(
-                                    controller: _controllers[index]!,
-                                    onEditingComplete: () {
-                                      String newValue = _controllers[index]!.text.trim();
-                                      if (!_defaultEquipmentOptions.contains(newValue) &&
-                                          !_customEquipmentOptions.contains(newValue) &&
-                                          newValue.isNotEmpty) {
-                                        setState(() {
-                                          _customEquipmentOptions.add(newValue);
-                                        });
-                                        _saveCustomEquipmentOptions();
-                                      }
-                                      _updateWorkScope(index, "equipmentList", newValue);
-                                      FocusScope.of(context).unfocus();
-                                    },
-                                    cursorColor: Colors.black87,
-                                    decoration: const InputDecoration(
-                                      labelText: "Select or Add Equipment",
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                                      labelStyle: const TextStyle(color: Colors.black87),
-                                      focusedBorder: UnderlineInputBorder(
-                                        borderSide: BorderSide(color: Colors.black87, width: 2),
-                                      ),
-                                    ),
-                                  ),
-                                  suggestionsCallback: (pattern) {
-                                    return [
-                                      ..._defaultEquipmentOptions,
-                                      ..._customEquipmentOptions
-                                    ].where((item) => item.toLowerCase().contains(pattern.toLowerCase()));
-                                  },
-                                  itemBuilder: (context, suggestion) {
-                                    return ListTile(title: Text(suggestion));
-                                  },
-                                  onSuggestionSelected: (suggestion) {
-                                    _controllers[index]!.text = suggestion;
-                                    _updateWorkScope(index, "equipmentList", suggestion);
-                                  },
-                                ),
-                              ),
-                              if (!_defaultEquipmentOptions.contains(currentValue) &&
-                                  currentValue.isNotEmpty)
-                                  IconButton(
-                                    icon: const Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () async {
-                                      final confirmed = await showDialog<bool>(
-                                        context: context,
-                                        builder: (context) => AlertDialog(
-                                          title: const Text("Confirm Delete"),
-                                          content: Text("Are you sure you want to delete \"$currentValue\" from your custom equipment list?"),
-                                          actions: [
-                                            TextButton(
-                                              child: const Text("Cancel"),
-                                              onPressed: () => Navigator.of(context).pop(false),
-                                            ),
-                                            TextButton(
-                                              child: const Text("Delete", style: TextStyle(color: Colors.red)),
-                                              onPressed: () => Navigator.of(context).pop(true),
-                                            ),
-                                          ],
-                                        ),
-                                      );
-
-                                      if (confirmed == true) {
-                                        setState(() {
-                                          _customEquipmentOptions.remove(currentValue);
-                                          _workScopeList[index]["equipmentList"] = "";
-                                          _controllers[index]!.clear();
-                                        });
-                                        _saveCustomEquipmentOptions();
-                                      }
-                                    },
-                                  ),
+  child: Column(
+    children: [
+      DropdownButtonFormField<String>(
+        value: _defaultEquipmentOptions.contains(currentValue)
+            ? currentValue
+            : null,
+        items: [
+          ..._defaultEquipmentOptions,
+          ..._customEquipmentOptions,
+        ].map((option) {
+          return DropdownMenuItem<String>(
+            value: option,
+            child: Text(option),
+          );
+        }).toList(),
+        onChanged: (selected) {
+          if (selected != null) {
+            _controllers[index]!.text = selected;
+            _updateWorkScope(index, "equipmentList", selected);
+          }
+        },
+        decoration: const InputDecoration(
+          labelText: "Select Equipment",
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        ),
+      ),
+      const SizedBox(height: 8),
+      TextFormField(
+        controller: _controllers[index],
+        textAlign: TextAlign.center,
+        onEditingComplete: () {
+          String newValue = _controllers[index]!.text.trim();
+          if (!_defaultEquipmentOptions.contains(newValue) &&
+              !_customEquipmentOptions.contains(newValue) &&
+              newValue.isNotEmpty) {
+            setState(() {
+              _customEquipmentOptions.add(newValue);
+            });
+            _saveCustomEquipmentOptions();
+          }
+          _updateWorkScope(index, "equipmentList", newValue);
+          FocusScope.of(context).unfocus();
+        },
+        decoration: const InputDecoration(
+          labelText: "Or Enter Custom Equipment",
+          isDense: true,
+          contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+        ),
+      ),
+    ],
+  ),
+),
                             ],
                           )
-                        : TextFormField(
-                            initialValue: currentValue,
-                            textAlign: TextAlign.center,
-                            onChanged: (value) {
-                              _updateWorkScope(index, "equipmentList", value);
-                            },
-                            cursorColor: Colors.black87,
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              isDense: true,
-                              contentPadding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                            ),
-                          ),
+                        : const SizedBox.shrink(),
               ),
+
       ),
     );
   }

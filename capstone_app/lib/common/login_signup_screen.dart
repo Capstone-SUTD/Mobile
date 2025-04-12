@@ -122,28 +122,40 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        backgroundColor: Colors.white,
         body: Center(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16.0),
             child: Center(
               child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 400),
+                constraints: const BoxConstraints(maxWidth: 350),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    RichText(
-                      text: TextSpan(
+                    Column( 
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                      Image.asset(
+                        'assets/images/app_logo.png',
+                        width: 150,
+                        height: 150,
+                      ),
+                      const SizedBox(height: 5),
+                      RichText(
+                        text: TextSpan(
                         style: const TextStyle(
-                            fontSize: 24, fontWeight: FontWeight.bold),
+                          fontSize: 24, fontWeight: FontWeight.bold),
                         children: const [
                           TextSpan(
-                              text: 'OOG ',
-                              style: TextStyle(color: Colors.red)),
+                            text: 'OOG ',
+                            style: TextStyle(color: Colors.red)),
                           TextSpan(
-                              text: 'Navigator',
-                              style: TextStyle(color: Colors.black)),
+                            text: 'Navigator',
+                            style: TextStyle(color: Colors.black)),
                         ],
+                        ),
                       ),
+                      ],
                     ),
                     const SizedBox(height: 24),
                     TextField(
