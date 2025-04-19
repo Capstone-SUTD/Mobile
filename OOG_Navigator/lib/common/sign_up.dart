@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'login_signup_screen.dart';
@@ -15,7 +14,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   Future<void> _register(BuildContext context) async {
     if (!_formKey.currentState!.validate()) return;
@@ -111,7 +111,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Sign Up')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text('Sign Up'),
+        backgroundColor: Colors.white,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -121,8 +125,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               TextFormField(
                 controller: _usernameController,
                 decoration: _requiredFieldDecoration('Username'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Username is required' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Username is required'
+                    : null,
               ),
               SizedBox(height: 20),
               TextFormField(
@@ -136,8 +141,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: _requiredFieldDecoration('Password'),
-                validator: (value) =>
-                    value == null || value.isEmpty ? 'Password is required' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Password is required'
+                    : null,
               ),
               SizedBox(height: 20),
               TextFormField(
@@ -157,17 +163,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
               SizedBox(height: 40),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  padding: EdgeInsets.symmetric(horizontal: 70, vertical: 10),
+                  backgroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 onPressed: () => _register(context),
                 child: Text(
-                  'Register',
+                  'Sign Up',
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 16,
                     color: Colors.white,
                   ),
                 ),

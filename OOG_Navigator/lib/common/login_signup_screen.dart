@@ -132,32 +132,32 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Column( 
+                    Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                      Image.asset(
-                        'assets/images/app_logo.png',
-                        width: 150,
-                        height: 150,
-                      ),
-                      const SizedBox(height: 5),
-                      RichText(
-                        text: TextSpan(
-                        style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold),
-                        children: const [
-                          TextSpan(
-                            text: 'OOG ',
-                            style: TextStyle(color: Colors.red)),
-                          TextSpan(
-                            text: 'Navigator',
-                            style: TextStyle(color: Colors.black)),
-                        ],
+                        Image.asset(
+                          'assets/images/app_logo.png',
+                          width: 150,
+                          height: 150,
                         ),
-                      ),
+                        const SizedBox(height: 5),
+                        RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                                fontSize: 32, fontWeight: FontWeight.bold),
+                            children: const [
+                              TextSpan(
+                                  text: 'OOG ',
+                                  style: TextStyle(color: Colors.red)),
+                              TextSpan(
+                                  text: 'Navigator',
+                                  style: TextStyle(color: Colors.black)),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 72),
                     TextField(
                       controller: _userIdController,
                       focusNode: _userIdFocus,
@@ -198,50 +198,45 @@ class _LoginSignUpScreenState extends State<LoginSignUpScreen> {
                       ),
                     ),
                     const SizedBox(height: 30),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.red,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: () => _login(context),
-                            child: const Text(
-                              'Log In',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
-                            ),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      onPressed: () => _login(context),
+                      child: const Text(
+                        'Log In',
+                        style: TextStyle(fontSize: 16, color: Colors.white),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 14),
+                        minimumSize: const Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          side: const BorderSide(
+                            color: Colors.black,
+                            width: 2,
                           ),
                         ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.black,
-                              padding: const EdgeInsets.symmetric(vertical: 14),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                    builder: (context) => SignUpScreen()),
-                              );
-                            },
-                            child: const Text(
-                              'Sign Up',
-                              style:
-                                  TextStyle(fontSize: 16, color: Colors.white),
-                            ),
-                          ),
-                        ),
-                      ],
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (context) => SignUpScreen()),
+                        );
+                      },
+                      child: const Text(
+                        'Sign Up',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
                     ),
                   ],
                 ),
