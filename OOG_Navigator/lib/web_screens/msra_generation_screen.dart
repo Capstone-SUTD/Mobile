@@ -28,11 +28,14 @@ class _MSRAGenerationScreenState extends State<MSRAGenerationScreen> {
   int _msVersions = 0;
   int _raVersions = 0;
   bool _isLoading = false;
+  bool _isClosing = false;
+  bool _isClosed = false;
 
   @override
   void initState() {
     super.initState();
     _project = widget.project;
+    _isClosed = _project?.stage == "Project Completion";
     _callApprovalStatusApi(); 
   }
 
@@ -165,6 +168,7 @@ class _MSRAGenerationScreenState extends State<MSRAGenerationScreen> {
   }
 
   void _showErrorSnackbar(String message) {
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
@@ -174,8 +178,63 @@ class _MSRAGenerationScreenState extends State<MSRAGenerationScreen> {
     });
   }
 
-  void _closeProject(){
+  Future<void> _closeProject() async {
+    if (_isClosing || _isClosed || !mounted) return;
 
+    setState(() {
+      _isClosing = true;
+    });
+
+    try {
+      final projectId = int.tryParse(_project?.projectId?.toString() ?? "");
+      if (projectId == null || projectId <= 0) {
+        throw Exception("Invalid project ID");
+      }
+
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('auth_token');
+      if (token == null || token.isEmpty) {
+        throw Exception("Token not found");
+      }
+
+      final response = await http.post(
+        Uri.parse('https://backend-app-huhre9drhvh6dphh.southeastasia-01.azurewebsites.net/project/close'),
+        headers: {
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({'projectid': projectId}),
+      );
+
+      if (response.statusCode != 200) {
+        String errorMessage = "Failed to close project: ${response.statusCode}";
+        try {
+          final data = jsonDecode(response.body);
+          if (data is Map && data['error'] is String) {
+            errorMessage = data['error'];
+          }
+        } on FormatException {
+          // Retain the status message when the server does not return JSON.
+        }
+        throw Exception(errorMessage);
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _isClosed = true;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Project closed successfully.")),
+      );
+    } catch (e) {
+      _showErrorSnackbar("Failed to close project: $e");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isClosing = false;
+        });
+      }
+    }
   }
 
 Future<List<Stakeholder>> _fetchUpdatedStakeholders() async {
@@ -267,6 +326,8 @@ Future<List<Stakeholder>> _fetchUpdatedStakeholders() async {
                 ? FeedbackAndClose(
                   stakeholders: _project.stakeholders,
                   onClose: _closeProject,
+                  isClosing: _isClosing,
+                  isClosed: _isClosed,
                   fetchUpdatedStakeholders: _fetchUpdatedStakeholders,
                   projectId: _project?.projectId ?? "",)
                 : ApprovalListWidget(

@@ -9,12 +9,16 @@ class FeedbackAndClose extends StatefulWidget {
   final VoidCallback onClose;
   final Future<List<Stakeholder>> Function() fetchUpdatedStakeholders;
   final String projectId;
+  final bool isClosing;
+  final bool isClosed;
 
   const FeedbackAndClose({
     required this.stakeholders,
     required this.onClose,
     required this.fetchUpdatedStakeholders,
     required this.projectId,
+    this.isClosing = false,
+    this.isClosed = false,
     Key? key,
   }) : super(key: key);
 
@@ -175,8 +179,10 @@ class _FeedbackAndCloseState extends State<FeedbackAndClose> {
         ),
         SizedBox(height: 20),
         ElevatedButton(
-          onPressed: widget.onClose,
-          child: Text("Close Project"),
+          onPressed: widget.isClosing || widget.isClosed ? null : widget.onClose,
+          child: Text(widget.isClosed
+              ? "Project Closed"
+              : widget.isClosing ? "Closing..." : "Close Project"),
         ),
       ],
     );
