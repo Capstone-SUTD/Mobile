@@ -5,15 +5,15 @@ class FileUploadWidget extends StatefulWidget {
   const FileUploadWidget({Key? key}) : super(key: key);
 
   @override
-  _FileUploadWidgetState createState() => _FileUploadWidgetState();
+  FileUploadWidgetState createState() => FileUploadWidgetState();
 }
 
-class _FileUploadWidgetState extends State<FileUploadWidget> {
+class FileUploadWidgetState extends State<FileUploadWidget> {
   List<PlatformFile> _uploadedFiles = [];
   bool _isDragging = false;
 
   List<PlatformFile> getUploadedFiles() {
-    return _uploadedFiles;
+    return List<PlatformFile>.unmodifiable(_uploadedFiles);
   }
 
   Future<void> _pickFiles() async {
@@ -22,9 +22,10 @@ class _FileUploadWidgetState extends State<FileUploadWidget> {
         type: FileType.custom,
         allowedExtensions: ['pdf'],
         allowMultiple: true,
+        withData: true,
       );
 
-      if (result != null) {
+      if (result != null && mounted) {
         setState(() {
           _uploadedFiles.addAll(result.files);
         });

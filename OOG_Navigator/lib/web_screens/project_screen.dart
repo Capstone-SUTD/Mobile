@@ -40,12 +40,11 @@ class _ProjectScreenState extends State<ProjectScreen> {
   int selectedTabIndex = 0;
   int currentStep = 0;
   List<String> resultsOOG = [];
-  List<PlatformFile> uploadedFiles = [];
 
   final GlobalKey<ProjectFormWidgetState> _formKey = GlobalKey<ProjectFormWidgetState>();
   final GlobalKey<CargoDetailsTableWidgetState> _cargoKey = GlobalKey<CargoDetailsTableWidgetState>();
   final GlobalKey<WorkScopeWidgetState> _workScopeKey = GlobalKey<WorkScopeWidgetState>();
-  final GlobalKey _fileUploadKey = GlobalKey();
+  final GlobalKey<FileUploadWidgetState> _fileUploadKey = GlobalKey<FileUploadWidgetState>();
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -206,7 +205,8 @@ class _ProjectScreenState extends State<ProjectScreen> {
     PlatformFile? vendorMS;
     PlatformFile? vendorRA;
 
-    for (final file in uploadedFiles) {
+    final selectedFiles = _fileUploadKey.currentState?.getUploadedFiles() ?? [];
+    for (final file in selectedFiles) {
       final name = file.name.toLowerCase();
       if (vendorMS == null && name.contains('ms')) {
         vendorMS = file;
@@ -216,6 +216,13 @@ class _ProjectScreenState extends State<ProjectScreen> {
     }
 
     try {
+      if (vendorMS != null && vendorMS.bytes == null) {
+        throw Exception("Unable to read selected MS file: ${vendorMS.name}");
+      }
+      if (vendorRA != null && vendorRA.bytes == null) {
+        throw Exception("Unable to read selected RA file: ${vendorRA.name}");
+      }
+
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('auth_token');
       if (token == null) throw Exception("Missing token");
@@ -239,17 +246,17 @@ class _ProjectScreenState extends State<ProjectScreen> {
       request.fields['scope'] = jsonEncode(scopeList);
 
       if (vendorMS != null) {
-        request.files.add(await http.MultipartFile.fromPath(
+        request.files.add(http.MultipartFile.fromBytes(
           'VendorMS',
-          vendorMS.path!,
+          vendorMS.bytes!,
           filename: vendorMS.name,
         ));
       }
 
       if (vendorRA != null) {
-        request.files.add(await http.MultipartFile.fromPath(
+        request.files.add(http.MultipartFile.fromBytes(
           'VendorRA',
-          vendorRA.path!,
+          vendorRA.bytes!,
           filename: vendorRA.name,
         ));
       }
