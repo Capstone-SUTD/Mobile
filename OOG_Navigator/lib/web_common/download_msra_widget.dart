@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:open_file/open_file.dart';
-import 'dart:io';
+import 'document_save_stub.dart'
+    if (dart.library.io) 'document_save_io.dart'
+    if (dart.library.html) 'document_save_web.dart';
 
 class DownloadMSRAWidget extends StatefulWidget {
   final String projectId;
@@ -26,6 +26,8 @@ class _DownloadMSRAWidgetState extends State<DownloadMSRAWidget> {
   bool _isDownloading = false;
 
   Future<void> _downloadFile(String fileType) async {
+    if (_isDownloading || !mounted) return;
+
     setState(() {
       _isDownloading = true;
     });
@@ -51,49 +53,30 @@ class _DownloadMSRAWidgetState extends State<DownloadMSRAWidget> {
       );
 
       if (response.statusCode == 200) {
-        await _saveAndOpenFile(response.bodyBytes, fileType);
+        final extension = fileType == "MS" ? ".docx" : ".xlsx";
+        final fileName = "${fileType}_v${fileType == "MS" ? widget.msVersion : widget.raVersion}$extension";
+        await saveDocument(response.bodyBytes, fileName);
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text("$fileType downloaded successfully")),
+          );
+        }
       } else {
         throw Exception("Download failed: ${response.body}");
       }
     } catch (e) {
       print("Download error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to download $fileType: ${e.toString()}")),
-      );
-    } finally {
-      setState(() {
-        _isDownloading = false;
-      });
-    }
-  }
-
-  Future<void> _saveAndOpenFile(List<int> bytes, String fileType) async {
-    try {
-      // Get the directory for saving the file
-      final directory = await getDownloadsDirectory();
-      if (directory == null) {
-        throw Exception("Could not access downloads directory");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Failed to download $fileType: ${e.toString()}")),
+        );
       }
-
-      // Create file name with appropriate extension
-      final extension = fileType == "MS" ? ".docx" : ".xlsx";
-      final fileName = "${fileType}_v${fileType == "MS" ? widget.msVersion : widget.raVersion}$extension";
-      final file = File('${directory.path}/$fileName');
-
-      // Write the file
-      await file.writeAsBytes(bytes, flush: true);
-
-      // Open the file
-      await OpenFile.open(file.path);
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("$fileType downloaded successfully")),
-      );
-    } catch (e) {
-      print("File save error: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Failed to save $fileType: ${e.toString()}")),
-      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isDownloading = false;
+        });
+      }
     }
   }
 
